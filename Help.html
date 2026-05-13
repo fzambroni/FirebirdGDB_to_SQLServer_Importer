@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Firebird GDB to SQL Server Importer - Help</title>
+  <style>
+    :root {
+      --bg: #f6f2ed;
+      --surface: #ffffff;
+      --surface-soft: #fff8f1;
+      --text: #1f2933;
+      --muted: #62707d;
+      --line: #e7ddd2;
+      --orange: #ff7a18;
+      --orange-dark: #c85200;
+      --gray: #5c6670;
+      --blue: #2067b2;
+      --red: #b42318;
+      --green: #1f7a42;
+      --shadow: 0 18px 45px rgba(45, 36, 28, 0.12);
+      --radius: 20px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, Helvetica, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(255, 122, 24, 0.18), transparent 28rem),
+        linear-gradient(180deg, #fffaf5 0%, var(--bg) 100%);
+      line-height: 1.55;
+    }
+
+    a { color: var(--orange-dark); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .page {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 28px;
+    }
+
+    .hero {
+      overflow: hidden;
+      border-radius: 28px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255, 122, 24, 0.14);
+    }
+
+    .hero-image {
+      min-height: 330px;
+      background-image: linear-gradient(90deg, rgba(255,255,255,0.96) 0%, rgba(255,255,255,0.76) 45%, rgba(255,255,255,0.22) 100%), url("splash.jpg");
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      align-items: center;
+      padding: 54px;
+    }
+
+    .hero-copy { max-width: 590px; }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: rgba(255, 122, 24, 0.12);
+      color: var(--orange-dark);
+      font-weight: 700;
+      font-size: 0.78rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 5vw, 3.7rem);
+      line-height: 0.98;
+      margin: 18px 0 16px;
+      letter-spacing: -0.04em;
+    }
+
+    .subtitle {
+      font-size: 1.14rem;
+      color: var(--muted);
+      margin: 0 0 22px;
+      max-width: 55ch;
+    }
+
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px; }
+
+    .button-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      padding: 10px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--text);
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .button-link.primary {
+      background: var(--orange);
+      color: white;
+      border-color: var(--orange);
+    }
+
+    .button-link:hover { text-decoration: none; transform: translateY(-1px); }
+
+    .meta-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid var(--line);
+      background: #fff;
+    }
+
+    .meta-item { padding: 18px 22px; border-right: 1px solid var(--line); }
+    .meta-item:last-child { border-right: none; }
+    .meta-label { font-size: 0.75rem; text-transform: uppercase; color: var(--muted); font-weight: 700; letter-spacing: 0.05em; }
+    .meta-value { margin-top: 4px; font-weight: 700; }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 24px;
+      margin-top: 26px;
+      align-items: start;
+    }
+
+    .toc {
+      position: sticky;
+      top: 20px;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: 0 10px 28px rgba(45, 36, 28, 0.08);
+      padding: 18px;
+    }
+
+    .toc h2 { margin: 0 0 12px; font-size: 1rem; }
+    .toc a {
+      display: block;
+      padding: 8px 10px;
+      color: var(--gray);
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.94rem;
+    }
+    .toc a:hover { background: var(--surface-soft); color: var(--orange-dark); text-decoration: none; }
+
+    main { display: grid; gap: 22px; }
+
+    section {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: 0 10px 28px rgba(45, 36, 28, 0.06);
+      padding: 28px;
+    }
+
+    section h2 {
+      margin: 0 0 12px;
+      font-size: 1.55rem;
+      letter-spacing: -0.02em;
+    }
+
+    section h3 { margin: 22px 0 8px; font-size: 1.08rem; }
+    p { margin: 0 0 14px; }
+    ul, ol { margin-top: 8px; padding-left: 1.35rem; }
+    li { margin: 7px 0; }
+
+    .callout {
+      margin: 16px 0;
+      padding: 15px 16px;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 122, 24, 0.28);
+      background: var(--surface-soft);
+    }
+
+    .callout strong { color: var(--orange-dark); }
+    .callout.warning { border-color: rgba(180, 35, 24, 0.28); background: #fff6f5; }
+    .callout.warning strong { color: var(--red); }
+    .callout.success { border-color: rgba(31, 122, 66, 0.25); background: #f3fbf6; }
+    .callout.success strong { color: var(--green); }
+
+    .steps {
+      counter-reset: step;
+      display: grid;
+      gap: 12px;
+      margin: 16px 0 0;
+    }
+
+    .step {
+      counter-increment: step;
+      display: grid;
+      grid-template-columns: 38px 1fr;
+      gap: 14px;
+      align-items: start;
+      padding: 15px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: #fffdfb;
+    }
+
+    .step::before {
+      content: counter(step);
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      background: var(--orange);
+      color: #fff;
+      font-weight: 800;
+      border-radius: 50%;
+      box-shadow: 0 8px 18px rgba(255, 122, 24, 0.25);
+    }
+
+    .step-title { font-weight: 800; margin-bottom: 3px; }
+    .step div:last-child { color: var(--muted); }
+
+    .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+
+    .card {
+      border: 1px solid var(--line);
+      background: #fffdfb;
+      border-radius: 16px;
+      padding: 16px;
+    }
+    .card h3 { margin-top: 0; }
+    .card p:last-child { margin-bottom: 0; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14px 0;
+      overflow: hidden;
+      border-radius: 16px;
+      font-size: 0.96rem;
+    }
+
+    th, td {
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+      padding: 12px 14px;
+    }
+
+    th {
+      background: #fff3e7;
+      color: #5a2a05;
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    tr:last-child td { border-bottom: none; }
+    code {
+      background: #f3eee8;
+      padding: 2px 6px;
+      border-radius: 6px;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 0.92em;
+    }
+
+    .kbd {
+      display: inline-block;
+      border: 1px solid #cfc5b9;
+      background: #fff;
+      border-bottom-width: 2px;
+      padding: 1px 7px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 0.86em;
+    }
+
+    .footer {
+      color: var(--muted);
+      text-align: center;
+      padding: 28px 0 10px;
+      font-size: 0.92rem;
+    }
+
+    @media (max-width: 920px) {
+      .page { padding: 16px; }
+      .hero-image { padding: 30px; min-height: 280px; }
+      .meta-strip { grid-template-columns: repeat(2, 1fr); }
+      .meta-item:nth-child(2) { border-right: none; }
+      .layout { grid-template-columns: 1fr; }
+      .toc { position: static; }
+      .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    }
+
+    @media print {
+      body { background: #fff; }
+      .page { max-width: none; padding: 0; }
+      .hero, section, .toc { box-shadow: none; }
+      .hero-actions, .toc { display: none; }
+      .layout { display: block; }
+      section { break-inside: avoid; margin: 14px 0; }
+      a { color: var(--text); }
+    }
+  </style>
+</head>
+<body>
+  <div class="page" id="top">
+    <header class="hero">
+      <div class="hero-image" role="img" aria-label="Firebird database moving data to SQL Server database">
+        <div class="hero-copy">
+          <span class="eyebrow">User Help</span>
+          <h1>Firebird GDB to SQL Server Importer</h1>
+          <p class="subtitle">A practical guide for loading Firebird <code>.gdb</code> data into an existing SQL Server database, checking progress, exporting SQL scripts, and knowing what to do when something needs attention.</p>
+          <div class="hero-actions">
+            <a class="button-link primary" href="#quick-start">Start with the import steps</a>
+            <a class="button-link" href="#buttons">View button guide</a>
+            <a class="button-link" href="#troubleshooting">Troubleshooting</a>
+          </div>
+        </div>
+      </div>
+      <div class="meta-strip">
+        <div class="meta-item"><div class="meta-label">Application</div><div class="meta-value">GDB to SQL Server Importer</div></div>
+        <div class="meta-item"><div class="meta-label">Version reviewed</div><div class="meta-value">1.1.2.8</div></div>
+        <div class="meta-item"><div class="meta-label">Audience</div><div class="meta-value">Migration and demo-data users</div></div>
+        <div class="meta-item"><div class="meta-label">Last updated</div><div class="meta-value">May 2026</div></div>
+      </div>
+    </header>
+
+    <div class="layout">
+      <aside class="toc" aria-label="Help navigation">
+        <h2>Contents</h2>
+        <a href="#what-it-does">1. What this tool does</a>
+        <a href="#before-start">2. Before you start</a>
+        <a href="#quick-start">3. Quick import flow</a>
+        <a href="#screen-areas">4. Screen areas</a>
+        <a href="#buttons">5. Button guide</a>
+        <a href="#options">6. Import options</a>
+        <a href="#export">7. Export SQL scripts</a>
+        <a href="#progress-logs">8. Progress and logs</a>
+        <a href="#results">9. Final messages</a>
+        <a href="#blank-db">10. Blank SQL Server database</a>
+        <a href="#troubleshooting">11. Troubleshooting</a>
+        <a href="#safe-practices">12. Safe practices</a>
+      </aside>
+
+      <main>
+        <section id="what-it-does">
+          <h2>1. What this tool does</h2>
+          <p>This importer helps you move data from a Firebird <code>.gdb</code> database into an existing SQL Server database. It is mainly intended for controlled Ortems data migration, data validation, and demo-data transfer scenarios.</p>
+          <div class="grid-2">
+            <div class="card">
+              <h3>Use it to</h3>
+              <ul>
+                <li>Connect to a source Firebird <code>.gdb</code> file.</li>
+                <li>Connect to a target SQL Server database.</li>
+                <li>Select which tables to import.</li>
+                <li>Run an import with progress, counters, and a log file.</li>
+                <li>Export Firebird tables as SQL Server-compatible scripts.</li>
+              </ul>
+            </div>
+            <div class="card">
+              <h3>Do not use it to</h3>
+              <ul>
+                <li>Create the SQL Server database structure from scratch.</li>
+                <li>Fix an unknown or corrupted production database without a backup.</li>
+                <li>Open Ortems against a partial database after an aborted import.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="callout warning"><strong>Key point:</strong> the SQL Server database structure must already exist before the import starts.</div>
+        </section>
+
+        <section id="before-start">
+          <h2>2. Before you start</h2>
+          <p>Most avoidable failures happen before the first row is imported. Check these items first.</p>
+          <div class="grid-2">
+            <div class="card">
+              <h3>Source side</h3>
+              <ul>
+                <li>You can access the Firebird <code>.gdb</code> file.</li>
+                <li>The Firebird ODBC driver is installed.</li>
+                <li>You know the Firebird server, port, user, and password.</li>
+              </ul>
+            </div>
+            <div class="card">
+              <h3>Target side</h3>
+              <ul>
+                <li>The SQL Server database already exists.</li>
+                <li>The Ortems objects/tables already exist in the target database.</li>
+                <li>You have permission to insert data and, when selected, clear target tables.</li>
+                <li>You have a recent backup before any reload.</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section id="quick-start">
+          <h2>3. Quick import flow</h2>
+          <p>Use this sequence for the normal import process. It is intentionally simple: connect, load tables, select, run, review.</p>
+          <div class="steps">
+            <div class="step"><div><div class="step-title">Select the source file</div><div>Click <span class="kbd">Browse...</span> and choose the Firebird <code>.gdb</code> file.</div></div></div>
+            <div class="step"><div><div class="step-title">Test the Firebird connection</div><div>Confirm the Firebird server, port, user, and password. Click <span class="kbd">Test Firebird Connection</span>.</div></div></div>
+            <div class="step"><div><div class="step-title">Enter the SQL Server target</div><div>Fill in the SQL Server name, database, authentication method, and target schema. The default schema is usually <code>dbo</code>.</div></div></div>
+            <div class="step"><div><div class="step-title">Test the SQL Server connection</div><div>Click <span class="kbd">Test SQL Server Connection</span>. Do not continue until it succeeds.</div></div></div>
+            <div class="step"><div><div class="step-title">Load the table list</div><div>Click <span class="kbd">1 - Load Table List</span>. The source tables appear in the table list.</div></div></div>
+            <div class="step"><div><div class="step-title">Select the tables</div><div>Click <span class="kbd">2 - Select All</span> for a full migration, or check only the tables you want.</div></div></div>
+            <div class="step"><div><div class="step-title">Review the options</div><div>For most Ortems imports, keep the default safe options unless you have a reason to change them.</div></div></div>
+            <div class="step"><div><div class="step-title">Run the import</div><div>Click <span class="kbd">3 - Run Import</span> and monitor the progress bar, status line, counters, and live log.</div></div></div>
+            <div class="step"><div><div class="step-title">Read the final message</div><div>At the end, review the result message and open the log if there are warnings, skipped rows, failed tables, or errors.</div></div></div>
+          </div>
+        </section>
+
+        <section id="screen-areas">
+          <h2>4. Main screen areas</h2>
+          <table>
+            <thead><tr><th>Area</th><th>Purpose</th><th>User tip</th></tr></thead>
+            <tbody>
+              <tr><td>Source (Firebird)</td><td>Selects the <code>.gdb</code> file and Firebird connection settings.</td><td>Start here. The table list cannot be loaded until this connection works.</td></tr>
+              <tr><td>Target (SQL Server)</td><td>Defines where the data will be imported.</td><td>Make sure you are pointing to the right database, especially before using clear/reload options.</td></tr>
+              <tr><td>Tables to Import</td><td>Shows the available source tables and lets you choose what to process.</td><td>Use <span class="kbd">Select All</span> for a full move; otherwise select only the required tables.</td></tr>
+              <tr><td>Run</td><td>Contains import/export controls, progress, log location, and live messages.</td><td>During a run, most controls are disabled. Use <span class="kbd">Abort</span> only when you really need to stop.</td></tr>
+              <tr><td>Footer</td><td>Shows current status, error count, and warning count.</td><td>Warnings deserve review even when the final import says it completed.</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section id="buttons">
+          <h2>5. Button guide</h2>
+          <table>
+            <thead><tr><th>Button</th><th>What it does</th><th>When to use it</th></tr></thead>
+            <tbody>
+              <tr><td><span class="kbd">Browse...</span></td><td>Opens a file picker to select the source Firebird database.</td><td>Use it first, before testing the Firebird connection.</td></tr>
+              <tr><td><span class="kbd">Test Firebird Connection</span></td><td>Checks whether the application can reach and open the source <code>.gdb</code>.</td><td>Use it every time you change the source file or credentials.</td></tr>
+              <tr><td><span class="kbd">1 - Load Table List</span></td><td>Reads the source database and lists the available tables.</td><td>Use it after the Firebird connection succeeds.</td></tr>
+              <tr><td><span class="kbd">Test SQL Server Connection</span></td><td>Checks whether the application can connect to the SQL Server target.</td><td>Use it before importing or exporting scripts.</td></tr>
+              <tr><td><span class="kbd">2 - Select All</span></td><td>Checks every table in the table list.</td><td>Use it for a full migration or full export.</td></tr>
+              <tr><td><span class="kbd">Clear All</span></td><td>Unchecks every selected table.</td><td>Use it when you want to restart the table selection.</td></tr>
+              <tr><td><span class="kbd">3 - Run Import</span></td><td>Starts the import from Firebird into SQL Server.</td><td>Use it only after both connection tests are successful and the correct tables are selected.</td></tr>
+              <tr><td><span class="kbd">Export SQL Scripts</span></td><td>Creates SQL Server-compatible script files from the selected Firebird tables.</td><td>Use it when you need text-based scripts for review, backup, or manual execution.</td></tr>
+              <tr><td><span class="kbd">Abort</span></td><td>Requests the current import or export to stop as soon as possible.</td><td>Use it carefully. A stopped import may leave the target database incomplete.</td></tr>
+              <tr><td><span class="kbd">Help</span></td><td>Opens the user help document.</td><td>Use it when you need the workflow or button explanations.</td></tr>
+              <tr><td><span class="kbd">Clear Log</span></td><td>Clears the live log shown on screen.</td><td>Use it to clean the display. It does not replace reviewing the generated log file.</td></tr>
+              <tr><td><span class="kbd">Exit</span></td><td>Closes the application.</td><td>Use it after the import/export is complete and logs are reviewed.</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section id="options">
+          <h2>6. Import options</h2>
+          <p>These options change how the import behaves. When in doubt, use a test database first.</p>
+          <table>
+            <thead><tr><th>Option</th><th>Plain-English meaning</th><th>Recommended use</th></tr></thead>
+            <tbody>
+              <tr><td>Clear selected tables before load</td><td>Deletes existing data from the selected target tables before importing.</td><td>Use for a clean reload. Back up the target first.</td></tr>
+              <tr><td>Skip duplicate PK rows in append mode</td><td>If a row already exists, the importer can skip it instead of stopping immediately.</td><td>Useful when appending data into a database that may already contain some records.</td></tr>
+              <tr><td>Order tables by SQL Server FK dependencies</td><td>Loads parent tables before dependent tables when the target database metadata allows it.</td><td>Keep enabled for Ortems imports.</td></tr>
+              <tr><td>Convert empty strings to NULL when target column is nullable</td><td>Treats blank values as empty database values when the target column allows it.</td><td>Usually safe and helpful for cleaner data.</td></tr>
+              <tr><td>Use safe fallback/default for NULL values in NOT NULL columns</td><td>Uses safe fallback values when the target field requires a value but the source is blank.</td><td>Use when loading Ortems datasets that may contain blanks in mandatory fields. Review the log.</td></tr>
+              <tr><td>Temporarily disable target table triggers during clear/load</td><td>Prevents target-side automation from running while bulk data is loaded.</td><td>Useful for full reloads where triggers may create side effects. Verify the final log.</td></tr>
+              <tr><td>Verbose mode</td><td>Writes detailed diagnostic information to the log file.</td><td>Turn on when troubleshooting. Leave off for normal faster runs.</td></tr>
+              <tr><td>Log Batch</td><td>Controls how often row progress is refreshed during long operations.</td><td>Keep the default <code>500</code> unless support asks for a different value.</td></tr>
+            </tbody>
+          </table>
+          <div class="callout"><strong>Practical default:</strong> for most controlled Ortems migrations, keep foreign-key ordering enabled and review the log at the end, even when the import succeeds.</div>
+        </section>
+
+        <section id="export">
+          <h2>7. Export SQL scripts</h2>
+          <p>The export feature creates SQL Server-compatible text scripts from the Firebird source tables. It does not import data into SQL Server; it only writes files.</p>
+          <div class="steps">
+            <div class="step"><div><div class="step-title">Select the source GDB</div><div>Choose the Firebird file and test the Firebird connection.</div></div></div>
+            <div class="step"><div><div class="step-title">Load and select tables</div><div>Load the table list and check the tables you want to export. If no tables are checked, the tool may export all source user tables.</div></div></div>
+            <div class="step"><div><div class="step-title">Click Export SQL Scripts</div><div>The application creates an export folder under <code>.\Export\</code>.</div></div></div>
+            <div class="step"><div><div class="step-title">Use the master script if needed</div><div>The generated folder includes a <code>00_RUN_ALL.sql</code> master file plus one script per table.</div></div></div>
+            <div class="step"><div><div class="step-title">Review the export log</div><div>The export log is saved under <code>.\log\export_YYYYMMDD_HHMMSS.log</code>.</div></div></div>
+          </div>
+          <div class="callout"><strong>Good use case:</strong> use export when you need a readable transfer package, a reviewable SQL backup, or scripts that can be executed manually later.</div>
+        </section>
+
+        <section id="progress-logs">
+          <h2>8. Progress and logs</h2>
+          <div class="grid-2">
+            <div class="card">
+              <h3>What you see on screen</h3>
+              <ul>
+                <li>The progress bar shows overall advancement.</li>
+                <li>The progress label shows the active table and row counters when available.</li>
+                <li>The footer shows the current status, errors, and warnings.</li>
+                <li>The live log shows key messages while the process is running.</li>
+              </ul>
+            </div>
+            <div class="card">
+              <h3>Where files are saved</h3>
+              <ul>
+                <li>Import logs: <code>.\log\import_YYYYMMDD_HHMMSS.log</code></li>
+                <li>Export logs: <code>.\log\export_YYYYMMDD_HHMMSS.log</code></li>
+                <li>SQL script exports: <code>.\Export\[GDBName]_YYYYMMDD_HHMMSS\</code></li>
+              </ul>
+            </div>
+          </div>
+          <div class="callout warning"><strong>Keep failed-run logs.</strong> They are the fastest way to understand connection problems, missing tables, skipped rows, duplicate rows, and failed imports.</div>
+        </section>
+
+        <section id="results">
+          <h2>9. Final messages</h2>
+          <table>
+            <thead><tr><th>Message</th><th>Meaning</th><th>What to do</th></tr></thead>
+            <tbody>
+              <tr><td>Import completed successfully</td><td>No failed tables and no counted errors.</td><td>Review warnings if any are shown, then validate the target database.</td></tr>
+              <tr><td>Import completed with issues</td><td>The process ended, but some tables, rows, warnings, or errors need review.</td><td>Open the log before using the database or opening Ortems.</td></tr>
+              <tr><td>Import aborted</td><td>The user requested stop, or the process stopped before finishing.</td><td>Treat the target as partial. Correct the issue and rerun before using it.</td></tr>
+              <tr><td>Import failed</td><td>The import could not start or failed during a required step.</td><td>Read the message and log. Check source path, connections, permissions, and table selection.</td></tr>
+              <tr><td>Export completed successfully</td><td>The selected source tables were written to script files.</td><td>Open the export folder and review the master script if needed.</td></tr>
+              <tr><td>Export completed with issues</td><td>Some export items reported warnings or failed tables.</td><td>Review the export log before using the generated scripts.</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section id="blank-db">
+          <h2>10. Preparing a blank SQL Server database</h2>
+          <p>The importer expects the SQL Server tables and database objects to already exist. If the database is blank, create the Ortems objects first.</p>
+          <div class="steps">
+            <div class="step"><div><div class="step-title">Open Ortems Environment Manager</div><div>Create or select the environment that points to the target SQL Server database.</div></div></div>
+            <div class="step"><div><div class="step-title">Enter the SQL Server connection</div><div>Confirm server, database, authentication, user/password if required, and schema.</div></div></div>
+            <div class="step"><div><div class="step-title">Test the connection</div><div>Make sure Environment Manager can reach the target database.</div></div></div>
+            <div class="step"><div><div class="step-title">Create the database objects</div><div>If Environment Manager indicates the database is empty, open the object creation window and create the objects.</div></div></div>
+            <div class="step"><div><div class="step-title">Return to the importer</div><div>Test the SQL Server connection in this tool, load the table list, select the tables, and run the import.</div></div></div>
+          </div>
+          <div class="callout warning"><strong>Do not run the import against a blank database.</strong> If object creation fails, ask a database administrator to verify permissions.</div>
+        </section>
+
+        <section id="troubleshooting">
+          <h2>11. Troubleshooting</h2>
+          <table>
+            <thead><tr><th>Symptom</th><th>Most likely cause</th><th>Try this first</th></tr></thead>
+            <tbody>
+              <tr><td>Firebird connection fails</td><td>Wrong file path, server, port, credentials, or missing driver.</td><td>Confirm the <code>.gdb</code> path, Firebird service, ODBC driver, user, and password.</td></tr>
+              <tr><td>SQL Server connection fails</td><td>Wrong server/database, authentication problem, network issue, or missing permissions.</td><td>Retype the server and database. Test Windows vs SQL Server authentication as appropriate.</td></tr>
+              <tr><td>No tables appear</td><td>The source connection did not succeed or the selected source does not contain user tables.</td><td>Test Firebird connection again, then click <span class="kbd">1 - Load Table List</span>.</td></tr>
+              <tr><td>Import fails immediately</td><td>Missing source file, no selected tables, or target connection failure.</td><td>Read the final message and check the log path shown in the result.</td></tr>
+              <tr><td>Duplicate-row errors</td><td>The target database already contains matching rows.</td><td>Use a clean database reload or enable duplicate skipping only when append mode is intentional.</td></tr>
+              <tr><td>Foreign-key errors</td><td>Required parent data is missing or selected tables are incomplete.</td><td>Keep FK ordering enabled and include the related parent tables in the import.</td></tr>
+              <tr><td>Warnings after success</td><td>The importer adjusted, skipped, or corrected data during the run.</td><td>Review the warning lines in the log before relying on the database.</td></tr>
+              <tr><td>Ortems does not open after import</td><td>The target data may be incomplete or inconsistent.</td><td>Do not keep using that database. Review the latest import log and the Ortems startup message together.</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section id="safe-practices">
+          <h2>12. Safe operating practices</h2>
+          <div class="grid-3">
+            <div class="card">
+              <h3>Use a test target first</h3>
+              <p>Run the import into a test SQL Server database before touching any shared or production-like environment.</p>
+            </div>
+            <div class="card">
+              <h3>Back up before reload</h3>
+              <p>Always back up the target database before using <strong>Clear selected tables before load</strong>.</p>
+            </div>
+            <div class="card">
+              <h3>Do not ignore warnings</h3>
+              <p>A completed import can still contain warnings. Read the log before opening Ortems or sharing the result.</p>
+            </div>
+            <div class="card">
+              <h3>Avoid partial databases</h3>
+              <p>If an import is aborted or fails, treat the target as incomplete until it is corrected and reloaded.</p>
+            </div>
+            <div class="card">
+              <h3>Keep evidence</h3>
+              <p>When reporting a problem, include the log file, selected options, source GDB name, target database name, and screenshots of any final message.</p>
+            </div>
+            <div class="card">
+              <h3>Change one thing at a time</h3>
+              <p>When troubleshooting, avoid changing many options at once. That makes it much harder to identify the real cause.</p>
+            </div>
+          </div>
+          <div class="callout success"><strong>Simple rule:</strong> successful connection tests plus a clean final log are the best signs that the dataset is ready for validation.</div>
+        </section>
+      </main>
+    </div>
+
+    <footer class="footer">
+      Firebird GDB to SQL Server Importer - User Help - Version reviewed 1.1.2.8
+    </footer>
+  </div>
+</body>
+</html>

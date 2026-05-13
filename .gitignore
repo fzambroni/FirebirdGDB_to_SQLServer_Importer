@@ -1,3 +1,5 @@
 *.ini
 *.log
 *.GDB
+/Export
+/BackUp
