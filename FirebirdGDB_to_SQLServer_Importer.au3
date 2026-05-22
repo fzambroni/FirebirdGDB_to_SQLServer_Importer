@@ -91,6 +91,7 @@ Global $WinPos_X = -1
 Global $WinPos_Y = -1
 Global $Label_Percentage = "30%"
 Global $Progress_Splash = "0"
+Global $hGUI ;Handle of main screen - Must be declared
 Global $sSplashPath = @ScriptDir & "\splash.jpg"
 FileInstall("splash.jpg", $sSplashPath, 1)
 _splash("on")
