@@ -4,7 +4,7 @@
 #AutoIt3Wrapper_UseUpx=n
 #AutoIt3Wrapper_UseX64=y
 #AutoIt3Wrapper_Res_Description=Firebird GDB to SQLServer Importer
-#AutoIt3Wrapper_Res_Fileversion=1.1.3.7
+#AutoIt3Wrapper_Res_Fileversion=1.1.3.8
 #AutoIt3Wrapper_Res_ProductName=Firebird GDB to SQLServer Importer
 #AutoIt3Wrapper_Res_ProductVersion=1.1.1.1
 #AutoIt3Wrapper_Res_CompanyName=Fabricio Zambroni
@@ -92,13 +92,14 @@ Global $WinPos_Y = -1
 Global $Label_Percentage = "30%"
 Global $Progress_Splash = "0"
 Global $sSplashPath = @ScriptDir & "\splash.jpg"
-
 FileInstall("splash.jpg", $sSplashPath, 1)
 _splash("on")
 Sleep(200)
 GUICtrlSetData($Label_Percentage, "30%")
 GUICtrlSetData($Progress_Splash, 30)
 Sleep(300)
+
+
 ; Skip automatic update checks when running the .au3 directly from SciTE/dev mode.
 If Not StringInStr(StringLower(@ScriptName), ".au3") Then
     _CheckGitHubUpdate()
@@ -4177,8 +4178,8 @@ Func _splash($Mode = "on")
 		Global $Label_version = GUICtrlCreateLabel(FileGetVersion(@ScriptFullPath), 560, 330, -1, -1, $SS_SIMPLE)
 		GUICtrlSetColor($Label_version, 0xFFFFFF)
 		GUICtrlSetBkColor($Label_version, 0x5b90b2)
-		Global $Button_Close_Splash = GUICtrlCreateCheckbox("X", 605, 15, 20, 20, $BS_PUSHLIKE)
-		GUICtrlDelete($Button_Close_Splash)
+;~ 		Global $Button_Close_Splash = GUICtrlCreateCheckbox("X", 605, 15, 20, 20, $BS_PUSHLIKE)
+;~ 		GUICtrlDelete($Button_Close_Splash)
 		GUISetState(@SW_SHOW, $Form_Splash)
 
 		Return
@@ -4189,8 +4190,4 @@ Func _splash($Mode = "on")
 			Return
 		EndIf
 	EndIf
-
-
-
-
 EndFunc   ;==>_splash
