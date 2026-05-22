@@ -4,7 +4,7 @@
 #AutoIt3Wrapper_UseUpx=n
 #AutoIt3Wrapper_UseX64=y
 #AutoIt3Wrapper_Res_Description=Firebird GDB to SQLServer Importer
-#AutoIt3Wrapper_Res_Fileversion=1.1.3.5
+#AutoIt3Wrapper_Res_Fileversion=1.1.3.6
 #AutoIt3Wrapper_Res_ProductName=Firebird GDB to SQLServer Importer
 #AutoIt3Wrapper_Res_ProductVersion=1.1.1.1
 #AutoIt3Wrapper_Res_CompanyName=Fabricio Zambroni
@@ -84,6 +84,21 @@ Opt("MustDeclareVars", 1)
 
 Global $GitHubAppName = "FirebirdGDB_to_SQLServer_Importer"
 
+;Splash Screen
+Global $splashWin_X = 640
+Global $splashWin_Y = 360
+Global $WinPos_X = -1
+Global $WinPos_Y = -1
+Global $Label_Percentage = "30%"
+Global $Progress_Splash = "0"
+Global $sSplashPath = @ScriptDir & "\splash.jpg"
+
+FileInstall("splash.jpg", $sSplashPath, 1)
+_splash("on")
+Sleep(200)
+GUICtrlSetData($Label_Percentage, "30%")
+GUICtrlSetData($Progress_Splash, 30)
+Sleep(300)
 ; Skip automatic update checks when running the .au3 directly from SciTE/dev mode.
 If Not StringInStr(StringLower(@ScriptName), ".au3") Then
     _CheckGitHubUpdate()
@@ -132,11 +147,15 @@ Global $i = 0, $c = 0
 
 
 
+
 ; -----------------------------
 ; GUI
 ; -----------------------------
-Global $hGUI = GUICreate("Firebird GDB -> SQL Server Importer", 1040, 760)
+Global $hGUI = GUICreate("Firebird GDB -> SQL Server Importer", 1040, 760, -1,-1)
 
+GUICtrlSetData($Label_Percentage, "60%")
+GUICtrlSetData($Progress_Splash, 60)
+Sleep(500)
 GUICtrlCreateGroup("Source (Firebird)", 10, 10, 1020, 160)
 Global $lblGdb = GUICtrlCreateLabel("GDB file path:", 25, 40, 110, 20)
 Global $inpGdb = GUICtrlCreateInput("", 140, 36, 700, 24)
@@ -225,6 +244,9 @@ Global $chkVerboseMode = GUICtrlCreateCheckbox("Verbose mode", 720, 501, 140, 22
 GUICtrlSetTip($chkVerboseMode, "Write detailed SQL commands, Firebird queries, return status, and row-level import decisions to the log file.")
 Global $lblLogFile = GUICtrlCreateLabel("(a new .\log\import_YYYYMMDD_HHMMSS.log file will be created for each run)", 550, 522, 455, 18) ;, $SS_GRAYFRAME)
 
+GUICtrlSetData($Label_Percentage, "90%")
+GUICtrlSetData($Progress_Splash, 90)
+Sleep(1000)
 Global $txtLog = GUICtrlCreateEdit("", 550, 545, 455, 90, BitOR($ES_READONLY, $ES_MULTILINE, $WS_VSCROLL))
 GUICtrlSetFont($txtLog, 9, 400, 0, "Consolas")
 
@@ -251,7 +273,10 @@ Global $btnExit = GUICtrlCreateButton("Exit", 880, 665, 150, 34)
 ; Footer
 Global $lblStatus = GUICtrlCreateLabel("Status: Ready", 10, 720, 700, 22)
 Global $lblErrCount = GUICtrlCreateLabel("Errors: 0 / 50 | Warnings: 0", 720, 720, 310, 22)
-
+GUICtrlSetData($Label_Percentage, "100%")
+GUICtrlSetData($Progress_Splash, 100)
+Sleep(500)
+_splash("off")
 GUISetState(@SW_SHOW, $hGUI)
 
 _LoadSettings()
@@ -4129,3 +4154,43 @@ Func _Cleanup()
 		$g_oSqlConn = 0
 	EndIf
 EndFunc   ;==>_Cleanup
+
+Func _splash($Mode = "on")
+
+	If $Mode = "on" Then
+
+		$splashWin_X = 640
+		$splashWin_Y = 360
+
+		If $WinPos_X = -1 And $WinPos_Y = -1 Then
+			Global $Form_Splash = GUICreate("", $splashWin_X, $splashWin_Y, -1, -1, $WS_POPUP, BitOR($WS_EX_TOPMOST, $WS_EX_TOOLWINDOW, $WS_EX_LAYERED))
+		Else
+			Global $Form_Splash = GUICreate("", $splashWin_X, $splashWin_Y, $WinPos_X, $WinPos_Y, $WS_POPUP, BitOR($WS_EX_TOPMOST, $WS_EX_TOOLWINDOW, $WS_EX_LAYERED))
+		EndIf
+
+		Global $Pic_Splash = GUICtrlCreatePic($sSplashPath, 5, 5, 630, 350)
+
+		Global $Progress_Splash = GUICtrlCreateProgress(104, 288, 430, 17)
+		Global $Label_Percentage = GUICtrlCreateLabel("0%", 540, 290, 100, -1, $SS_SIMPLE)
+		GUICtrlSetColor($Label_Percentage, 0xFFFFFF)
+		GUICtrlSetBkColor($Label_Percentage, 0x5b90b2)
+		Global $Label_version = GUICtrlCreateLabel(FileGetVersion(@ScriptFullPath), 560, 330, -1, -1, $SS_SIMPLE)
+		GUICtrlSetColor($Label_version, 0xFFFFFF)
+		GUICtrlSetBkColor($Label_version, 0x5b90b2)
+		Global $Button_Close_Splash = GUICtrlCreateCheckbox("X", 605, 15, 20, 20, $BS_PUSHLIKE)
+		GUICtrlDelete($Button_Close_Splash)
+		GUISetState(@SW_SHOW, $Form_Splash)
+
+		Return
+	Else
+		If $Mode = "off" Then
+			GUIDelete($Form_Splash)
+			GUISetState(@SW_SHOW, $hGUI)
+			Return
+		EndIf
+	EndIf
+
+
+
+
+EndFunc   ;==>_splash

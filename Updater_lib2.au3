@@ -107,6 +107,7 @@ EndIf
     FileInstall("Updater.exe", $sUpdaterFile, 1)
     Sleep(500)
     Run($sUpdaterFile & " '" & @ScriptDir & "'")
+	_splash("off")
     Sleep(100)
     Exit
 EndFunc
