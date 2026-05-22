@@ -4,7 +4,7 @@
 #AutoIt3Wrapper_UseUpx=n
 #AutoIt3Wrapper_UseX64=y
 #AutoIt3Wrapper_Res_Description=Firebird GDB to SQLServer Importer
-#AutoIt3Wrapper_Res_Fileversion=1.1.3.6
+#AutoIt3Wrapper_Res_Fileversion=1.1.3.7
 #AutoIt3Wrapper_Res_ProductName=Firebird GDB to SQLServer Importer
 #AutoIt3Wrapper_Res_ProductVersion=1.1.1.1
 #AutoIt3Wrapper_Res_CompanyName=Fabricio Zambroni
