@@ -4,7 +4,7 @@
 #AutoIt3Wrapper_UseUpx=n
 #AutoIt3Wrapper_UseX64=y
 #AutoIt3Wrapper_Res_Description=Firebird GDB to SQLServer Importer
-#AutoIt3Wrapper_Res_Fileversion=1.1.3.9
+#AutoIt3Wrapper_Res_Fileversion=1.1.4.0
 #AutoIt3Wrapper_Res_ProductName=Firebird GDB to SQLServer Importer
 #AutoIt3Wrapper_Res_ProductVersion=1.1.1.1
 #AutoIt3Wrapper_Res_CompanyName=Fabricio Zambroni
@@ -4171,14 +4171,14 @@ Func _splash($Mode = "on")
 		EndIf
 
 		Global $Pic_Splash = GUICtrlCreatePic($sSplashPath, 5, 5, 630, 350)
-
+		Global $percentage_BKColor = "0xC0C0C0"
 		Global $Progress_Splash = GUICtrlCreateProgress(104, 288, 430, 17)
 		Global $Label_Percentage = GUICtrlCreateLabel("0%", 540, 290, 100, -1, $SS_SIMPLE)
 		GUICtrlSetColor($Label_Percentage, 0xFFFFFF)
-		GUICtrlSetBkColor($Label_Percentage, 0x5b90b2)
+		GUICtrlSetBkColor($Label_Percentage, $percentage_BKColor)
 		Global $Label_version = GUICtrlCreateLabel(FileGetVersion(@ScriptFullPath), 560, 330, -1, -1, $SS_SIMPLE)
 		GUICtrlSetColor($Label_version, 0xFFFFFF)
-		GUICtrlSetBkColor($Label_version, 0x5b90b2)
+		GUICtrlSetBkColor($Label_version, $percentage_BKColor)
 ;~ 		Global $Button_Close_Splash = GUICtrlCreateCheckbox("X", 605, 15, 20, 20, $BS_PUSHLIKE)
 ;~ 		GUICtrlDelete($Button_Close_Splash)
 		GUISetState(@SW_SHOW, $Form_Splash)
